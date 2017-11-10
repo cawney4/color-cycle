@@ -4,20 +4,55 @@
 <head>
 </head>
 <body>
-	<canvas id="thecanvas" width="100" height="100" ></canvas>
+	<canvas id="thecanvas" width="500" height="500" ></canvas>
 	<script>
 		var fps = 5;
-		var size = 100;
+		//var size = 500;
 		//var startTime = (new Date()).getTime();
 		var canvas = document.getElementById("thecanvas");
 		var ctx = canvas.getContext("2d");
+		var size = canvas.width;
 		ctx.fillStyle = "#FF0000";
 		ctx.fillRect(0,0,size,size);
 		//var num = 0;
 		
-		var palette = ["#000000", "#FF0000", "#FF0000", "#FF0000"];
-		var image = [];
+		//var palette = ["#000000", "#FF0000", "#FF0000", "#FF0000"];
+		var palette = ["#000000", "#00FFFF", "#008000", "#FF5733"];
+		//var image = [];
+		var image = new Array(size * size);
+		image.fill(0);
+		
+		
+		for (var i = size / 3.0; i < size / 2.0; i++) {
+			for (var j = 0; j < size; j++) {
+				var sin = Math.sin(10 * j/ (size));
+				var y = Math.abs(sin);
+				var index = twoToOne(Math.floor(i), Math.floor(j));
+				
+				//console.log(y);
+				if (y > (i * 2 / (size))) {
+					image[index] = 1;
+					
+				} else {
+					//image[index] = 0;
+				}
+				//image[index] = 1;
+			}
+		}
+		
+		
+		
+		for (var i = size / 2.0; i < 2.0 * size / 3.0; i++) {
+			for (var j = 0; j < size; j++) {
+				var index = twoToOne(Math.floor(i), Math.floor(j));
+				image[index] = 2;
+			}
+		}
+		
+		
+		//console.log(image);
 
+		/*
 		for (var i = 0; i < size / 4.0; i++) {
 			image.push(0);
 		}
@@ -30,20 +65,28 @@
 		for (var i = size * 3.0 / 4.0; i < size; i++) {
 			image.push(3);
 		}
+		*/
 
 		
  		paint();
 		
+		function twoToOne(x, y) {
+			return x + size * y;
+		}
+		
 		function paint() {
 			var temp = Object.assign([], palette);
 			for (var i = 1; i < palette.length; i++) {
-				palette[i] = temp[i - 1];
+				if (temp[i - 1] != "#000000") {
+				
+					palette[i] = temp[i - 1];
+				}
 			}
-			palette[0] = temp[temp.length - 1];
+			palette[1] = temp[temp.length - 1];
 			
 			for (var i = 0; i < size; i++) {
 				for (var j = 0; j < size; j++) {
-					ctx.fillStyle = palette[image[j]];
+					ctx.fillStyle = palette[image[twoToOne(i, j)]];
 					ctx.fillRect(i, j, 1, 1);
 				}
 			}
